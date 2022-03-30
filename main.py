@@ -168,7 +168,12 @@ def update():
     tags=['Twitter']
     )
 def home():
-    return {'home': 'welcome to home'}
+    with open('tweets.json','r',encoding='utf-8') as f:
+        tweets = json.load(f)
+        if len(tweets) == 0:
+            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail='Not content')
+        
+        return tweets
 
 ###Post a tweet
 @app.post(
@@ -180,6 +185,10 @@ def home():
     )
 def post():
     pass
+    # with open('tweets.json','r+',encoding='utf-8') as f:
+    #     result = json.loads(f.read())
+    #     tweet_dict = 
+
 
 ###show a tweeet
 @app.get(

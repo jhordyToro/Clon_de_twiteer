@@ -1,30 +1,9 @@
 [
     {
         "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "email": "liliana@example.com",
-        "first_name": "liliana",
-        "last_name": "De Horta",
-        "birth_date": "2005-02-20"
-    },
-    {
-        "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "email": "jhordy@example.com",
-        "first_name": "jhovana",
-        "last_name": "toro arroyo",
-        "birth_date": "2005-02-20"
-    },
-    {
-        "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "email": "ramiro@example.com",
-        "first_name": "Ramiro",
-        "last_name": "toro",
-        "birth_date": "2005-02-20"
-    },
-    {
-        "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "email": "jhordy@example.com",
-        "first_name": "jhordy",
-        "last_name": "toro arroyo",
-        "birth_date": "2005-02-20"
+        "email": "kike@example.com",
+        "first_name": "jorge",
+        "last_name": "manuel",
+        "birth_date": "2001-12-12"
     }
 ]
