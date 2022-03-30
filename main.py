@@ -36,10 +36,7 @@ class twitter(BaseModel):
 app = FastAPI()
 
 #Path parameters 
-##Home
-@app.get('/',tags=['Home'])
-def home():
-    return {'home': 'welcome to home'}
+
 
 ##Users
 @app.post(
@@ -83,7 +80,7 @@ def user():
     pass
 
 @app.delete(
-    path='/users/delete/{user_id}',
+    path='/users/{user_id}/delete',
     status_code=status.HTTP_200_OK,
     response_model=User,
     summary='delete_user',
@@ -93,7 +90,7 @@ def delete():
     pass
 
 @app.put(
-    path='/users/update/{user_id}',
+    path='/users/{user_id}/update',
     status_code=status.HTTP_200_OK,
     response_model=User,
     summary='update_user',
@@ -104,3 +101,52 @@ def update():
 
 
 ##Twitter
+@app.get(
+    path='/',
+    status_code=status.HTTP_200_OK,
+    response_model=List[twitter],
+    summary='Home_twittes',
+    tags=['Twitter']
+    )
+def home():
+    return {'home': 'welcome to home'}
+
+@app.post(
+    path='/post',
+    status_code=status.HTTP_201_CREATED,
+    response_model=twitter,
+    summary='post_twittes',
+    tags=['Twitter']
+    )
+def post():
+    pass
+
+@app.get(
+    path='/twittes/{twitte_id}',
+    status_code=status.HTTP_200_OK,
+    response_model=twitter,
+    summary='show_a_twittes',
+    tags=['Twitter']
+    )
+def twitte():
+    pass
+
+@app.delete(
+    path='/twittes/{twitte_id}/delete',
+    status_code=status.HTTP_200_OK,
+    response_model=twitter,
+    summary='delete_twitte',
+    tags=['Twitter']
+    )
+def delete():
+    pass
+
+@app.put(
+    path='/twittes/{twitte_id}/update',
+    status_code=status.HTTP_200_OK,
+    response_model=twitter,
+    summary='update_twittes',
+    tags=['Twitter']
+    )
+def update():
+    pass
