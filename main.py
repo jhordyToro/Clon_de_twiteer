@@ -1,4 +1,5 @@
 #python
+from email.policy import default
 import json
 from datetime import date, datetime
 from uuid import UUID
@@ -11,7 +12,7 @@ from pydantic import Field,EmailStr
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Body
+from fastapi import Body, HTTPException
 
 class User_Base(BaseModel):
     user_id: UUID = Field(...)
@@ -99,7 +100,25 @@ def Login():
     tags=['Users']
 )
 def Users():
-    pass
+    """
+    This path operation shows all users in the app
+
+    Parameters: 
+        -
+
+    Returns a json list with all users in the app, with the following keys: 
+        - user_id: UUID
+        - email: Emailstr
+        - first_name: str
+        - last_name: str
+        - birth_date: datetime
+    """
+    with open('Users.json','r',encoding='utf-8') as f:
+        results = json.load(f)
+        if len(results) == 0:
+            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail='Not content') 
+        
+        return results
 
 ###Show a user
 @app.get(
