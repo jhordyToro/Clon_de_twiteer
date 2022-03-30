@@ -1,4 +1,5 @@
 #python
+import json
 from datetime import date, datetime
 from uuid import UUID
 from typing import Optional, List
@@ -10,6 +11,7 @@ from pydantic import Field,EmailStr
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
+from fastapi import Body
 
 class User_Base(BaseModel):
     user_id: UUID = Field(...)
@@ -23,7 +25,7 @@ class User_Login(User_Base):
 class User(User_Base):
     first_name: str = Field(...,min_length=1,max_length=50)
     last_name: str = Field(...,min_length=1,max_length=50)
-    birt_date: Optional[date] = Field(default=None)
+    birth_date: Optional[date] = Field(default=None)
 
 class User_register(User):
     password: str = Field(...,min_length=8,max_length=64)
@@ -49,7 +51,7 @@ app = FastAPI()
     summary='create_user',
     tags=['Users']
 )
-def signup():
+def signup(user: User = Body(...)):
     """
     Signup
 
@@ -64,8 +66,18 @@ def signup():
         - email: Emailstr
         - first_name: str
         - last_name: str
-        - birth_date: str
+        - birth_date: date
     """
+    with open("Users.json","r+", encoding="utf-8") as f:
+        results = json.loads(f.read())    ####leemos lo que esta dentro de la variable f y para que no nos muestre todo lo cargamos en formato json  
+        user_dict = user.dict()           ####convertimos el valor que nos introduce el cliente y lo combertimos en dict
+        user_dict["birth_date"] = str(user_dict["birth_date"])   ####comvertimos los valores birdate y userid manualmente a str para que no de error ya que la propia libreria no puede
+        user_dict["user_id"] = str(user_dict["user_id"])
+        results.append(user_dict) ### agregamos el usuario 
+        f.seek(0)   ### esta linea de cocdigo es para poder mover al puntero de lectura al inicio y que no se salga ningun valor
+        f.write(json.dumps(results)) ### escribimos el resultado directamente en el archivo f con el comando write y lo escribimos como json con el comando dumps
+        return user
+
 
 ###Login a user
 @app.post(
