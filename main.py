@@ -32,7 +32,7 @@ class User_register(User):
     password: str = Field(...,min_length=8,max_length=64)
 
 class tweet(BaseModel):
-    twitte_id: UUID = Field(...)
+    tweet_id: UUID = Field(...)
     contents: str = Field(...,min_length=1,max_length=264)
     create_at: datetime = Field(default=datetime.now())
     update_at: Optional[datetime] = Field(default=None)
@@ -170,9 +170,6 @@ def update():
 def home():
     with open('tweets.json','r',encoding='utf-8') as f:
         tweets = json.load(f)
-        if len(tweets) == 0:
-            raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail='Not content')
-        
         return tweets
 
 ###Post a tweet
@@ -183,12 +180,34 @@ def home():
     summary='post_a_tweet',
     tags=['Twitter']
     )
-def post():
-    pass
-    # with open('tweets.json','r+',encoding='utf-8') as f:
-    #     result = json.loads(f.read())
-    #     tweet_dict = 
+def post(tweet: tweet = Body(...)):
+    """
+    Post a Tweet
+    This path operation post a tweet in the app
+    Parameters: 
+        - Request body parameter
+            - tweet: Tweet
+    
+    Returns a json with the basic tweet information: 
+        tweet_id: UUID  
+        content: str    
+        created_at: datetime
+        updated_at: Optional[datetime]
+        by: User
+    """
+    with open('tweets.json','r+',encoding='utf-8') as f:
+        result = json.loads(f.read())
+        tweet_dict = tweet.dict()
+        tweet_dict['tweet_id'] = str(tweet_dict['tweet_id'])
+        tweet_dict['create_at'] = str(tweet_dict['create_at'])
+        tweet_dict['update_at'] = str(tweet_dict['update_at'])
+        tweet_dict['by']['user_id'] = str(tweet_dict['by']['user_id'])
+        tweet_dict['by']['birth_date'] = str(tweet_dict['by']['birth_date'])
 
+        result.append(tweet_dict)
+        f.seek(0)
+        f.write(json.dumps(result))
+        return tweet
 
 ###show a tweeet
 @app.get(
