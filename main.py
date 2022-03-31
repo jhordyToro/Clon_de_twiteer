@@ -1,5 +1,4 @@
 #python
-from email.policy import default
 import json
 from datetime import date, datetime
 from uuid import UUID
@@ -34,11 +33,28 @@ class User_register(User):
 class tweet(BaseModel):
     tweet_id: UUID = Field(...)
     contents: str = Field(...,min_length=1,max_length=264)
-    create_at: datetime = Field(default=datetime.now())
-    update_at: Optional[datetime] = Field(default=None)
+    created_at: datetime = Field(default=datetime.now())
+    updated_at: Optional[datetime] = Field(default=None)
     by: User = Field(...)
 
 app = FastAPI()
+
+
+"""
+# Auxiliar funcion 
+
+## funcion reed
+def read_data(file):
+    with open("{}.json".format(file), "r+", encoding="utf-8") as f: 
+        return json.loads(f.read())
+
+## funcion write
+def read_data(file, results):
+    with open("{}.json".format(file), "r+", encoding="utf-8") as f: 
+        f.seek(0)
+        f.write(json.dumps(results))
+"""
+
 
 #Path parameters 
 
@@ -52,7 +68,7 @@ app = FastAPI()
     summary='create_user',
     tags=['Users']
 )
-def signup(user: User = Body(...)):
+def signup(user: User_register = Body(...)):
     """
     Signup
 
@@ -79,17 +95,24 @@ def signup(user: User = Body(...)):
         f.write(json.dumps(results)) ### escribimos el resultado directamente en el archivo f con el comando write y lo escribimos como json con el comando dumps
         return user
 
-
+#········
 ###Login a user
 @app.post(
     path='/login',
     status_code=status.HTTP_200_OK,
-    response_model=User,
+    response_model=User_Base,
     summary='Login_user',
     tags=['Users']
 )
-def Login():
+def Login(email: EmailStr = Body(...), password: str = Body(...)):
     pass
+    # with open('Users.json','r+',encoding='utf-8') as f:
+    #     elements = json.loads(f.read())
+    #     for element in elements:
+    #         if element['password'] == password and element['email'] == email:
+    #             return {'welcome to the twitter'}
+    #         else:
+    #             return {'status': 'false'}
 
 ###Show all users
 @app.get(
@@ -120,6 +143,7 @@ def Users():
         
         return results
 
+#········
 ###Show a user
 @app.get(
     path='/users/{user_id}',
@@ -130,6 +154,7 @@ def Users():
 )
 def user():
     pass
+    # return {'user': 'user if exist'}
 
 ###Delete a user
 @app.delete(
@@ -168,6 +193,22 @@ def update():
     tags=['Twitter']
     )
 def home():
+    """
+    Post show all Tweets
+
+    This path operation post show all tweets in the app
+
+    Parameters: 
+        - Request body parameter
+            - tweet: tweet
+    
+    Returns a json with all the tweets information: 
+        tweet_id: UUID  
+        content: str    
+        created_at: datetime
+        updated_at: Optional[datetime]
+        by: User
+    """
     with open('tweets.json','r',encoding='utf-8') as f:
         tweets = json.load(f)
         return tweets
@@ -199,8 +240,8 @@ def post(tweet: tweet = Body(...)):
         result = json.loads(f.read())
         tweet_dict = tweet.dict()
         tweet_dict['tweet_id'] = str(tweet_dict['tweet_id'])
-        tweet_dict['create_at'] = str(tweet_dict['create_at'])
-        tweet_dict['update_at'] = str(tweet_dict['update_at'])
+        tweet_dict['created_at'] = str(tweet_dict['created_at'])
+        tweet_dict['updated_at'] = str(tweet_dict['updated_at'])  
         tweet_dict['by']['user_id'] = str(tweet_dict['by']['user_id'])
         tweet_dict['by']['birth_date'] = str(tweet_dict['by']['birth_date'])
 
